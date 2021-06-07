@@ -5,6 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import channelsReducer from '../app/features/channels/slice';
 import connectionReducer from '../app/features/connections/slice';
 import messageReducer from '../app/features/messages/slice';
+import notificationReducer from '../app/features/notifications/slice';
 
 import rootSaga from './saga';
 
@@ -33,6 +34,7 @@ export const store = configureStore({
     connections: connectionReducer,
     channels: channelsReducer,
     messages: messageReducer,
+    notifications: notificationReducer,
   },
   middleware: [
     ...getDefaultMiddleware({

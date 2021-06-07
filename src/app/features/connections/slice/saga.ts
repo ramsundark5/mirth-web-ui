@@ -49,11 +49,16 @@ export function* login({ payload }: PayloadAction<IMirthClientParams>) {
     yield updateConnectionFromResponse(connection.id, response);
     log.info('currentConnection is: ', connection);
   } catch (err) {
-    yield put(actions.setError(err));
+    const connectionError = {
+      status: err?.status,
+      message: err?.message,
+      connectionId: connection.id,
+    };
+    yield put(actions.setError(connectionError));
     yield put(
       actions.updateConnection({
         id: connection.id,
-        changes: { isConnected: false },
+        changes: { isConnected: false, error: connectionError },
       }),
     );
   } finally {
@@ -74,11 +79,16 @@ function* updateConnectionFromResponse(connectionId, response) {
           username: username,
           status: status,
           jsessionid: response.jsessionid,
+          error: undefined,
         },
       }),
     );
   } else {
-    const authFailed = { status: 500, message: 'authentication failed' };
+    const authFailed = {
+      status: 500,
+      message: 'authentication failed',
+      connectionId: connectionId,
+    };
     yield put(
       actions.updateConnection({
         id: connectionId,

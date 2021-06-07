@@ -1,7 +1,8 @@
 /* --- STATE --- */
 export interface ConnectionError {
-  status: number;
-  message: string;
+  connectionId: string;
+  status?: number;
+  message?: string;
 }
 
 export interface Connection {

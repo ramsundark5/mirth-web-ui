@@ -1,8 +1,10 @@
 import APIConstants from 'app/constants/APIConstants';
 import { connectionsActions } from 'app/features/connections/slice';
+import { notificationsActions } from 'app/features/notifications/slice';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { store } from 'store';
 import log from 'utils/logger';
+import { v4 as uuidv4 } from 'uuid';
 import xml2js from 'xml2js';
 const xmlParse = initXMLParser();
 
@@ -124,6 +126,19 @@ export async function request(
         connectionsActions.updateConnection({
           id: requestConfig.url || '',
           changes: { isConnected: false },
+        }),
+      );
+      const notificationId = uuidv4();
+      //also show a snackbar of the error
+      store.dispatch(
+        notificationsActions.enqueueNotification({
+          id: notificationId,
+          message: errorResponse?.message,
+          dismissed: false,
+          options: {
+            key: notificationId,
+            variant: 'warning',
+          },
         }),
       );
     }

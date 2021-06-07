@@ -47,7 +47,6 @@ export default function ConnectionSelector() {
             multiple
             id="selectedConnections"
             options={connections}
-            defaultValue={channelState.selectedConnections}
             getOptionLabel={option => option.url || ''}
             onChange={(event: any, selectedConnectionValues: Connection[]) => {
               setSelectedConnections(selectedConnectionValues);
