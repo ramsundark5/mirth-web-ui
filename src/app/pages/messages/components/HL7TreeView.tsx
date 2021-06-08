@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { createStyles, makeStyles, Theme, Typography } from '@material-ui/core';
 import { ExpandMore, ChevronRight } from '@material-ui/icons';

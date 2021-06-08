@@ -21,7 +21,8 @@ function* onLoadChannels({ payload }: PayloadAction<Connection[]>) {
 }
 
 function* onLoadChannelsSilently({ payload }: PayloadAction<Connection[]>) {
-  yield loadChannels(payload);
+  const validConnections = payload.filter(connection => connection.isConnected);
+  yield loadChannels(validConnections);
 }
 
 function* loadChannels(selectedConnections: Connection[]) {

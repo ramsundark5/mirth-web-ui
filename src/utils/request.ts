@@ -1,4 +1,5 @@
 import APIConstants from 'app/constants/APIConstants';
+import MessageConstants from 'app/constants/MessageConstants';
 import { connectionsActions } from 'app/features/connections/slice';
 import { notificationsActions } from 'app/features/notifications/slice';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -121,6 +122,11 @@ export async function request(
       message: error?.response?.data,
     };
     log.error('Error in API request:', error);
+    const notificationId = uuidv4();
+    const requestedMirthUrl =
+      requestConfig?.headers?.['mirth-url'] || 'http://unknownhost/';
+    const hostName = new URL(requestedMirthUrl).hostname;
+    //also show a snackbar of the error
     if (errorResponse.status && errorResponse.status === 401) {
       store.dispatch(
         connectionsActions.updateConnection({
@@ -128,16 +134,14 @@ export async function request(
           changes: { isConnected: false },
         }),
       );
-      const notificationId = uuidv4();
-      //also show a snackbar of the error
       store.dispatch(
         notificationsActions.enqueueNotification({
           id: notificationId,
-          message: errorResponse?.message,
+          message: MessageConstants.UNAUTHORIZED_MESSAGE(hostName),
           dismissed: false,
           options: {
             key: notificationId,
-            variant: 'warning',
+            variant: 'error',
           },
         }),
       );
@@ -149,6 +153,17 @@ export async function request(
         status: 0,
         message: errMessage,
       };
+      store.dispatch(
+        notificationsActions.enqueueNotification({
+          id: notificationId,
+          message: errMessage,
+          dismissed: false,
+          options: {
+            key: notificationId,
+            variant: 'error',
+          },
+        }),
+      );
       log.error(errMessage);
     }
     throw errorResponse;

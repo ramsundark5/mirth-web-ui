@@ -53,7 +53,7 @@ export default function SearchFilter() {
 
   //load the channels during the first load
   useEffect(() => {
-    dispatch(channelsActions.loadChannels(connections));
+    dispatch(channelsActions.loadChannelsSilently(connections));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connections]);
 

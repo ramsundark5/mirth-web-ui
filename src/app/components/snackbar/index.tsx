@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from 'store/hooks';
 
 let displayed: string[] = [];
 
-const Notifier = () => {
+const SnackBar = () => {
   const dispatch = useAppDispatch();
   const notifications: Notification[] = useAppSelector(
     notificationEntitySelector.selectAll,
@@ -61,4 +61,4 @@ const Notifier = () => {
   return null;
 };
 
-export default Notifier;
+export default SnackBar;
