@@ -16,6 +16,7 @@ export const getMessageCount = async ({
   const mirthAPIConfig: IMirthAPIConfig = {
     url: url,
     method: 'GET',
+    connectionId: connection.id,
     jsessionid: connection.jsessionid,
   };
   const results = await requestMirthAPI(mirthAPIConfig);
@@ -36,6 +37,7 @@ export const loadMessages = async ({
   const mirthAPIConfig: IMirthAPIConfig = {
     url: url,
     method: 'GET',
+    connectionId: connection.id,
     jsessionid: connection.jsessionid,
   };
   const results = await requestMirthAPI(mirthAPIConfig);

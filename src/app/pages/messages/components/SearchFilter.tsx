@@ -43,9 +43,17 @@ export default function SearchFilter() {
   const connections: Connection[] = useAppSelector(
     connectionEntitySelector.selectAll,
   );
+  const activeConnections = connections.filter(
+    connection => connection.isConnected,
+  );
   const messageState: MessageState =
     useAppSelector<MessageState>(messagesSelector);
 
+  const placeholderConnection: Connection = {
+    id: '--Select Connection--',
+    url: '--Select Connection--',
+    username: '',
+  };
   const selectedConnection = messageState?.searchParams?.selectedConnection;
   const filteredChannels = useAppSelector(
     channelsByConnectionSelector(selectedConnection?.id),
@@ -53,14 +61,15 @@ export default function SearchFilter() {
 
   //load the channels during the first load
   useEffect(() => {
-    dispatch(channelsActions.loadChannelsSilently(connections));
+    dispatch(channelsActions.loadChannelsSilently(activeConnections));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connections]);
+  }, [activeConnections]);
 
   const onSelectedConnectionChange = event => {
-    dispatch(
-      messageActions.setSelectedConnection(event.target.value as Connection),
-    );
+    const connectionFromSelect = event.target.value as Connection;
+    if (connectionFromSelect?.id !== placeholderConnection.id) {
+      dispatch(messageActions.setSelectedConnection(connectionFromSelect));
+    }
   };
 
   const formik = useFormik({
@@ -73,6 +82,10 @@ export default function SearchFilter() {
     },
   });
 
+  const connectionOptions = [placeholderConnection].concat(
+    activeConnections || [],
+  );
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <form onSubmit={formik.handleSubmit}>
@@ -82,10 +95,10 @@ export default function SearchFilter() {
             <Select
               labelId="select-connection-label"
               id="selected-connection"
-              value={selectedConnection}
+              value={selectedConnection || placeholderConnection}
               onChange={onSelectedConnectionChange}
             >
-              {connections.map(connection => (
+              {connectionOptions.map(connection => (
                 //@ts-ignore
                 <MenuItem key={connection.id} value={connection}>
                   {connection.url}

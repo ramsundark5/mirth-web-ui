@@ -17,6 +17,7 @@ export const loadMessageContent = async ({
   const results = await requestMirthAPI({
     url: url,
     method: 'GET',
+    connectionId: connection.id,
     jsessionid: connection.jsessionid,
   });
   const message = buildMessage(results);

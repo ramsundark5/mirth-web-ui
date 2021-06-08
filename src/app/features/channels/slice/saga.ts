@@ -35,6 +35,7 @@ function* loadChannels(selectedConnections: Connection[]) {
       const response = yield call(requestMirthAPI, {
         url: url,
         method: 'GET',
+        connectionId: connection.id,
         jsessionid: connection.jsessionid,
       });
       const channelList: Channel[] = buildChannels(response, connection);

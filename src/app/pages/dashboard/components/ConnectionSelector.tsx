@@ -18,6 +18,9 @@ export default function ConnectionSelector() {
   const connections: Connection[] = useAppSelector(
     connectionEntitySelector.selectAll,
   );
+  const activeConnections = connections.filter(
+    connection => connection.isConnected,
+  );
   const channelState = useAppSelector(channelStateSelector);
   const [selectedConnections, setSelectedConnections] = useState<Connection[]>(
     [],
@@ -46,7 +49,7 @@ export default function ConnectionSelector() {
           <Autocomplete
             multiple
             id="selectedConnections"
-            options={connections}
+            options={activeConnections}
             getOptionLabel={option => option.url || ''}
             onChange={(event: any, selectedConnectionValues: Connection[]) => {
               setSelectedConnections(selectedConnectionValues);

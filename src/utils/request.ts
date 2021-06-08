@@ -97,6 +97,7 @@ function checkStatus(response: AxiosResponse) {
  */
 export async function request(
   requestConfig: AxiosRequestConfig,
+  connectionId?: string,
   isXmlResponse?: boolean,
 ): Promise<{} | { err: ResponseError }> {
   let jsonResponse = {};
@@ -130,7 +131,7 @@ export async function request(
     if (errorResponse.status && errorResponse.status === 401) {
       store.dispatch(
         connectionsActions.updateConnection({
-          id: requestConfig.url || '',
+          id: connectionId || '',
           changes: { isConnected: false },
         }),
       );
@@ -187,11 +188,16 @@ export async function requestMirthAPI(
   if (mirthRequestConfig.data) {
     requestConfig.data = mirthRequestConfig.data;
   }
-  let jsonResponse = await request(requestConfig, true);
+  let jsonResponse = await request(
+    requestConfig,
+    mirthRequestConfig.connectionId,
+    true,
+  );
   return jsonResponse;
 }
 
 export interface IMirthAPIConfig {
+  connectionId: string;
   url: string;
   jsessionid?: string;
   method?: string;

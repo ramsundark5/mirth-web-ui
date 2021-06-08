@@ -42,6 +42,7 @@ export function* login({ payload }: PayloadAction<IMirthClientParams>) {
           password: payload.password || APIConstants.MIRTH_DEFAULT_PASSWORD,
         }),
       },
+      connection.id,
       true,
     );
 

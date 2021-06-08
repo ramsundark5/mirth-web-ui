@@ -71,7 +71,7 @@ function* searchMessages(messageState: MessageState, isNewSearch?: boolean) {
           channelId: channelIdToSearch,
           params: queryParamsString,
         });
-        yield put(actions.setMessageCount(messageTotalCount));
+        yield put(actions.setMessageCount(parseInt(messageTotalCount || 0)));
       }
       yield put(actions.setMessages(messageResponse));
     }
