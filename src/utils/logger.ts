@@ -1,4 +1,4 @@
 import log from 'loglevel';
 
-log.setLevel('DEBUG');
+log.setLevel('info');
 export default log;

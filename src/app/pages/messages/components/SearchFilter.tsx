@@ -23,7 +23,7 @@ import LoadingButton from 'app/components/LoadingButton';
 import { channelsActions } from 'app/features/channels/slice';
 import { channelsByConnectionSelector } from 'app/features/channels/slice/selectors';
 import { Channel } from 'app/features/channels/slice/types';
-import { connectionEntitySelector } from 'app/features/connections/slice/selectors';
+import { activeConnectionSelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
 import { initialState, messageActions } from 'app/features/messages/slice';
 import { messagesSelector } from 'app/features/messages/slice/selectors';
@@ -40,11 +40,8 @@ export default function SearchFilter() {
   const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
 
   const dispatch = useAppDispatch();
-  const connections: Connection[] = useAppSelector(
-    connectionEntitySelector.selectAll,
-  );
-  const activeConnections = connections.filter(
-    connection => connection.isConnected,
+  const activeConnections: Connection[] = useAppSelector(
+    activeConnectionSelector,
   );
   const messageState: MessageState =
     useAppSelector<MessageState>(messagesSelector);
@@ -72,6 +69,13 @@ export default function SearchFilter() {
     }
   };
 
+  const isSelectedChannel = option => {
+    const selectedChannels = formik.values.selectedChannels || [];
+    const isSelected = selectedChannels.some(
+      channel => channel.channelId === option.channelId,
+    );
+    return isSelected;
+  };
   const formik = useFormik({
     initialValues: initialState.searchParams,
     onSubmit: (values: MessageSearchParams) => {
@@ -112,6 +116,7 @@ export default function SearchFilter() {
             multiple
             id="selectedChannels"
             options={filteredChannels}
+            getOptionSelected={(option, value) => isSelectedChannel(option)}
             getOptionLabel={option => option.name || ''}
             onChange={(event: any, selectedChannels: Channel[]) => {
               formik.setFieldValue('selectedChannels', selectedChannels);

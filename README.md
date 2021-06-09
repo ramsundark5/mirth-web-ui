@@ -16,3 +16,15 @@ For production deployments:
 3. npm run prod 
 4. Open http://localhost:5000 to see the app home page.
 
+
+Features:
+
+- [x] Add/manage mirth connections
+- [x] Channel status/statistics (Dashboard view)
+- [x] Search Messages across channels
+- [ ] start/stop channels
+- [ ] View channel code
+
+
+
+

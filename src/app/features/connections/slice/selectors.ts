@@ -1,6 +1,8 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from 'store/types';
 
+import { Connection } from './types';
+
 import { connectionAdapter, initialState } from '.';
 
 const selectSlice = (state: RootState) => {
@@ -31,6 +33,20 @@ export const selectAnyConnected = createSelector(
       }
     }
     return anyConnected;
+  },
+);
+
+export const activeConnectionSelector = createSelector(
+  [selectSlice],
+  connectionState => {
+    let activeConnections: Connection[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const [id, connection] of Object.entries(connectionState.entities)) {
+      if (connection?.isConnected) {
+        activeConnections.push(connection);
+      }
+    }
+    return activeConnections;
   },
 );
 

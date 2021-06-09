@@ -7,7 +7,7 @@ import LoadingButton from 'app/components/LoadingButton';
 import APIConstants from 'app/constants/APIConstants';
 import { channelsActions } from 'app/features/channels/slice';
 import { channelStateSelector } from 'app/features/channels/slice/selectors';
-import { connectionEntitySelector } from 'app/features/connections/slice/selectors';
+import { activeConnectionSelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 
@@ -15,12 +15,10 @@ export default function ConnectionSelector() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
 
-  const connections: Connection[] = useAppSelector(
-    connectionEntitySelector.selectAll,
+  const activeConnections: Connection[] = useAppSelector(
+    activeConnectionSelector,
   );
-  const activeConnections = connections.filter(
-    connection => connection.isConnected,
-  );
+
   const channelState = useAppSelector(channelStateSelector);
   const [selectedConnections, setSelectedConnections] = useState<Connection[]>(
     [],
