@@ -5,7 +5,7 @@ class APIConstants {
   DASHBOARD_RELOAD_INTERVAL = 10000; //in milliseconds
   PROXY_API_LOGIN = '/mirth/login';
   PROXY_API_REQUEST = '/mirth/api';
-  MIRTH_DEFAULT_URL = 'https://127.0.0.1:8443';
+  MIRTH_DEFAULT_URL = 'https://localhost:8443';
   MIRTH_DEFAULT_USERNAME = 'admin';
   MIRTH_DEFAULT_PASSWORD = 'admin';
   MIRTH_LOGIN = '/api/users/_login';
