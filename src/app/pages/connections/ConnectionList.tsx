@@ -21,13 +21,15 @@ import { connectionEntitySelector } from 'app/features/connections/slice/selecto
 import { Connection } from 'app/features/connections/slice/types';
 import { useAppSelector } from 'store/hooks';
 
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import EditConnection from './EditConnection';
 
 export default function ConnectionList() {
   const connections: Connection[] = useAppSelector(
     connectionEntitySelector.selectAll,
   );
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [connectionToEdit, setConnectionToEdit] = useState<Connection>(
     {} as Connection,
   );
@@ -49,11 +51,20 @@ export default function ConnectionList() {
 
   const onEditConnection = connection => {
     setConnectionToEdit(connection);
-    setDialogOpen(true);
+    setEditDialogOpen(true);
   };
 
-  const onDialogClose = () => {
-    setDialogOpen(false);
+  const onDeleteConnection = connection => {
+    setConnectionToEdit(connection);
+    setDeleteDialogOpen(true);
+  };
+
+  const onEditDialogClose = () => {
+    setEditDialogOpen(false);
+  };
+
+  const onDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -77,7 +88,11 @@ export default function ConnectionList() {
                   >
                     Edit
                   </Button>
-                  <Button size="small" startIcon={<DeleteOutlined />}>
+                  <Button
+                    size="small"
+                    startIcon={<DeleteOutlined />}
+                    onClick={() => onDeleteConnection(connection)}
+                  >
                     Delete
                   </Button>
                 </CardActions>
@@ -106,9 +121,17 @@ export default function ConnectionList() {
           </Button>
         </Grid>
       </Grid>
-      <Dialog aria-labelledby="edit-connection" open={dialogOpen}>
-        <EditConnection connection={connectionToEdit} onClose={onDialogClose} />
+      <Dialog aria-labelledby="edit-connection" open={editDialogOpen}>
+        <EditConnection
+          connection={connectionToEdit}
+          onClose={onEditDialogClose}
+        />
       </Dialog>
+      <DeleteConfirmationDialog
+        open={deleteDialogOpen}
+        connection={connectionToEdit}
+        onClose={onDeleteDialogClose}
+      />
     </>
   );
 }

@@ -20,16 +20,15 @@ import Layout from 'app/pages/layout/Layout';
 import { HelmetProvider } from 'react-helmet-async';
 import reportWebVitals from 'reportWebVitals';
 import { store } from 'store';
-
+import { makeServer } from './mirage';
 // Initialize languages
 import './locales/i18n';
 import log from 'utils/logger';
 import { BrowserRouter } from 'react-router-dom';
-//const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
 if (process.env.NODE_ENV === 'development') {
-  //makeServer({ environment: 'development' });
+  makeServer({ environment: 'development' });
 }
 
 ReactDOM.render(
