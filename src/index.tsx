@@ -27,8 +27,10 @@ import log from 'utils/logger';
 import { BrowserRouter } from 'react-router-dom';
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
-if (process.env.NODE_ENV === 'development') {
-  makeServer({ environment: 'development' });
+const currentEnv = process.env.REACT_APP_ENV;
+log.info('running in mode ' + currentEnv);
+if (currentEnv === 'test') {
+  makeServer({ environment: 'test' });
 }
 
 ReactDOM.render(

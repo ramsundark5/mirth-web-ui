@@ -99,9 +99,11 @@
   "scripts": {
     "dev:server": "nodemon proxy-middleware.js",
     "dev:client": "react-scripts start",
+    "test:client": "REACT_APP_ENV=test react-scripts start",
     "start": "concurrently --kill-others-on-fail \"npm run dev:server\" \"npm run dev:client\"",
     "prod": "npm run build && NODE_ENV=production pm2 start proxy-middleware.js",
     "build": "react-scripts build",
+    "deploy": "REACT_APP_ENV=test react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "test:generators": "ts-node --project=./internals/ts-node.tsconfig.json ./internals/testing/generators/test-generators.ts",

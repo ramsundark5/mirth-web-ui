@@ -26,7 +26,9 @@ export default function ConnectionSelector() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      dispatch(channelsActions.loadChannelsSilently(selectedConnections));
+      if (process.env.REACT_APP_ENV !== 'test') {
+        dispatch(channelsActions.loadChannelsSilently(selectedConnections));
+      }
     }, APIConstants.DASHBOARD_RELOAD_INTERVAL);
 
     return () => {

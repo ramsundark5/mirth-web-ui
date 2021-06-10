@@ -6,20 +6,9 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { store } from 'store';
 import log from 'utils/logger';
 import { v4 as uuidv4 } from 'uuid';
-import xml2js from 'xml2js';
-const xmlParse = initXMLParser();
 
-function initXMLParser() {
-  const xmlParser = new xml2js.Parser();
-  const xmlParse = async xml => {
-    try {
-      return await xmlParser.parseStringPromise(xml);
-    } catch (e) {
-      return undefined;
-    }
-  };
-  return xmlParse;
-}
+import { xmlParse } from './xmlBuilder';
+
 export class ResponseError extends Error {
   public response: AxiosResponse;
 

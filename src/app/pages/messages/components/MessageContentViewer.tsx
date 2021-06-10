@@ -1,8 +1,7 @@
 import React, { useEffect, useState, memo } from 'react';
 
 import { Box, Paper, Tab, Tabs, Typography } from '@material-ui/core';
-import { MessageContent } from 'app/features/messages/slice/types';
-import { parse } from 'utils/hl7parser';
+import { xmlParse } from 'utils/xmlBuilder';
 
 import TreeViewer from './TreeViewer';
 
@@ -14,9 +13,7 @@ function MessagesContentViewer(props: {
   const [tabIndex, setTabIndex] = useState(0);
   const { messageContentKey, messageContents, selectedMessageContentType } =
     props;
-  const [messageContent, setMessageContent] = useState<MessageContent>(
-    {} as MessageContent,
-  );
+  const [messageContent, setMessageContent] = useState<string>('');
   const messageContentsLength = messageContents?.length || 0;
 
   useEffect(() => {
@@ -28,15 +25,15 @@ function MessagesContentViewer(props: {
     setTabIndex(newValue);
   };
 
-  const setSelectedMessageContent = () => {
-    for (const messageContent of messageContents) {
-      if (messageContent.type === selectedMessageContentType) {
-        try {
-          console.log(parse(messageContent.content));
-        } catch (err) {
-          console.log(err);
+  const setSelectedMessageContent = async () => {
+    for (const messageContentItem of messageContents) {
+      if (messageContentItem.type === selectedMessageContentType) {
+        let content = messageContentItem.content;
+        if (messageContentItem.type === 'response') {
+          const jsonMessage = await xmlParse(messageContentItem?.content || '');
+          content = jsonMessage?.response?.message?.[0];
         }
-        setMessageContent(messageContent);
+        setMessageContent(content);
         break;
       }
     }
@@ -50,11 +47,11 @@ function MessagesContentViewer(props: {
       {tabIndex === 0 ? (
         <Box margin={1} style={{ overflow: 'auto' }}>
           <Typography gutterBottom component="div">
-            {messageContent.content}
+            {messageContent}
           </Typography>
         </Box>
       ) : (
-        <TreeViewer messageContent={messageContent.content || ''} />
+        <TreeViewer messageContent={messageContent || ''} />
       )}
     </Paper>
   );
