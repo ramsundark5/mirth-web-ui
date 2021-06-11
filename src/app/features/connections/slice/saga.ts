@@ -6,7 +6,7 @@ import { request } from 'utils/request';
 
 import { IMirthClientParams } from './types';
 
-import { connectionsActions as actions } from '.';
+import { connectionsActions as actions, SUBMIT_STATES } from '.';
 
 export function* connectionsSaga() {
   yield takeLatest(actions.onLogin.type, login);
@@ -19,7 +19,7 @@ export function* login({ payload }: PayloadAction<IMirthClientParams>) {
     username: payload.username || APIConstants.MIRTH_DEFAULT_USERNAME,
   };
   try {
-    yield put(actions.setLoading(true));
+    yield put(actions.setSubmitState(SUBMIT_STATES.PENDING.toString()));
     yield put(actions.clearError());
     //add connection and set loading to false
     yield put(actions.addConnection(connection));
@@ -48,8 +48,10 @@ export function* login({ payload }: PayloadAction<IMirthClientParams>) {
 
     //update connection with response data
     yield updateConnectionFromResponse(connection.id, response);
+    yield put(actions.setSubmitState(SUBMIT_STATES.SUCCESS.toString()));
     log.info('currentConnection is: ', connection);
   } catch (err) {
+    yield put(actions.setSubmitState(SUBMIT_STATES.ERROR.toString()));
     const connectionError = {
       status: err?.status,
       message: err?.message,
@@ -62,8 +64,6 @@ export function* login({ payload }: PayloadAction<IMirthClientParams>) {
         changes: { isConnected: false, error: connectionError },
       }),
     );
-  } finally {
-    yield put(actions.setLoading(false));
   }
 }
 

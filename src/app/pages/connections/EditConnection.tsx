@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import {
   Button,
@@ -10,7 +10,11 @@ import {
 import { red } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import LoadingButton from 'app/components/LoadingButton';
-import { connectionsActions } from 'app/features/connections/slice';
+import APIConstants from 'app/constants/APIConstants';
+import {
+  connectionsActions,
+  SUBMIT_STATES,
+} from 'app/features/connections/slice';
 import { connectionStateSelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
 import { useFormik } from 'formik';
@@ -31,12 +35,19 @@ export default function EditConnection(props: {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const connectionState = useAppSelector(connectionStateSelector);
+  const currentSubmitState = connectionState?.submitState;
+
+  useEffect(() => {
+    if (currentSubmitState === SUBMIT_STATES.SUCCESS.toString()) {
+      onClose();
+    }
+  }, [currentSubmitState, onClose]);
 
   const formik = useFormik({
     initialValues: {
       username: '',
       password: '',
-      url: connection.url || 'https://localhost:8443',
+      url: connection.url || APIConstants.MIRTH_DEFAULT_URL,
     },
     validationSchema: validationSchema,
     onSubmit: values => {
@@ -99,7 +110,7 @@ export default function EditConnection(props: {
             {connectionState?.error?.message}
           </Typography>
           <LoadingButton
-            loading={connectionState.loading}
+            loading={currentSubmitState === SUBMIT_STATES.PENDING.toString()}
             type="submit"
             fullWidth
             variant="contained"

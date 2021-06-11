@@ -17,9 +17,13 @@ import {
   EditOutlined,
   FiberManualRecord,
 } from '@material-ui/icons';
+import {
+  connectionsActions,
+  SUBMIT_STATES,
+} from 'app/features/connections/slice';
 import { connectionEntitySelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
-import { useAppSelector } from 'store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 
 import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 import EditConnection from './EditConnection';
@@ -28,6 +32,7 @@ export default function ConnectionList() {
   const connections: Connection[] = useAppSelector(
     connectionEntitySelector.selectAll,
   );
+  const dispatch = useAppDispatch();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [connectionToEdit, setConnectionToEdit] = useState<Connection>(
@@ -51,6 +56,10 @@ export default function ConnectionList() {
 
   const onEditConnection = connection => {
     setConnectionToEdit(connection);
+    dispatch(connectionsActions.clearError());
+    dispatch(
+      connectionsActions.setSubmitState(SUBMIT_STATES.NOT_STARTED.toString()),
+    );
     setEditDialogOpen(true);
   };
 

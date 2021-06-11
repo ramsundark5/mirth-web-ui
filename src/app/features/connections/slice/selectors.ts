@@ -54,7 +54,7 @@ export const connectionStateSelector = createSelector(
   [selectSlice],
   connectionState => {
     return {
-      loading: connectionState.loading,
+      submitState: connectionState.submitState,
       error: connectionState.error,
     };
   },
