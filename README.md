@@ -1,6 +1,12 @@
-Prerequisite:
+**Prerequisite:**
+
  You need to have nodejs v11 or greater installed. https://nodejs.org/en/
 
+**Demo:**
+
+https://mirthwebui.netlify.app/
+
+**Installation:**
 
 To run it locally, 
 1. git clone https://github.com/ramsundark5/mirth-web-ui.git
@@ -17,7 +23,7 @@ For production deployments:
 4. Open http://localhost:5000 to see the app home page.
 
 
-Features:
+**Features:**
 
 - [x] Add/manage mirth connections
 - [x] Channel status/statistics (Dashboard view)
@@ -25,6 +31,24 @@ Features:
 - [ ] start/stop channels
 - [ ] View channel code
 
+
+**Screenshots:**
+
+***Add/Manage Connections:***
+
+![Connections View](./assets/screenshots/connections.png)
+
+***Dashboard(Channel statuses):***
+
+![Channel Statuses View](./assets/screenshots/dashboard.png)
+
+***Message Search:***
+
+![Message Search View](./assets/screenshots/messages.png)
+
+***Dark Mode:***
+
+![Darkmode View](./assets/screenshots/darkmode.png)
 
 
 

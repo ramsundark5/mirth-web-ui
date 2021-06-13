@@ -6,6 +6,8 @@ import {
   CssBaseline,
   Divider,
   Drawer,
+  FormControlLabel,
+  Grid,
   IconButton,
   makeStyles,
   Switch,
@@ -64,13 +66,30 @@ export default function Layout() {
             >
               <Menu />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              Mirth Web UI
-            </Typography>
-            <Switch
-              checked={darkMode}
-              onChange={() => setDarkMode(!darkMode)}
-            />
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <Typography variant="h6" noWrap>
+                  Mirth Web UI
+                </Typography>
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={darkMode}
+                      onChange={() => setDarkMode(!darkMode)}
+                    />
+                  }
+                  label="Dark"
+                  labelPlacement="start"
+                />
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -158,6 +177,9 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
       }),
       marginLeft: 0,
+    },
+    darkMode: {
+      marginRight: '2rem',
     },
   }),
 );
