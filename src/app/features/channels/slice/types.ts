@@ -20,3 +20,8 @@ export interface Statistic {
   FILTERED?: number;
   QUEUED?: number;
 }
+
+export interface ChannelActionParam {
+  channelIdList?: string[];
+  action?: string;
+}

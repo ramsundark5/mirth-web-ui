@@ -6,7 +6,10 @@ import { Autocomplete } from '@material-ui/lab';
 import LoadingButton from 'app/components/LoadingButton';
 import APIConstants from 'app/constants/APIConstants';
 import { channelsActions } from 'app/features/channels/slice';
-import { channelStateSelector } from 'app/features/channels/slice/selectors';
+import {
+  channelStateSelector,
+  channelsSelectedForActionSelector,
+} from 'app/features/channels/slice/selectors';
 import { activeConnectionSelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
@@ -20,13 +23,21 @@ export default function ConnectionSelector() {
   );
 
   const channelState = useAppSelector(channelStateSelector);
+  const channelsSelectedForAction = useAppSelector(
+    channelsSelectedForActionSelector,
+  );
   const [selectedConnections, setSelectedConnections] = useState<Connection[]>(
     [],
   );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (process.env.REACT_APP_ENV !== 'test') {
+      const anyChannelSelectedForAction =
+        channelsSelectedForAction && channelsSelectedForAction.length > 0;
+      if (
+        process.env.REACT_APP_ENV !== 'test' &&
+        !anyChannelSelectedForAction
+      ) {
         dispatch(channelsActions.loadChannelsSilently(selectedConnections));
       }
     }, APIConstants.DASHBOARD_RELOAD_INTERVAL);
@@ -35,7 +46,7 @@ export default function ConnectionSelector() {
       clearInterval(interval);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedConnections]);
+  }, [selectedConnections, channelsSelectedForAction]);
 
   const onSubmit = () => {
     dispatch(channelsActions.setSelectedConnections(selectedConnections));

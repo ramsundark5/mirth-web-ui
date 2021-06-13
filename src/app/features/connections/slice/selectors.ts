@@ -59,3 +59,9 @@ export const connectionStateSelector = createSelector(
     };
   },
 );
+
+export const selectConectionById = connectionId =>
+  createSelector([selectSlice], connectionState => {
+    const connection = connectionState.entities[connectionId];
+    return connection;
+  });

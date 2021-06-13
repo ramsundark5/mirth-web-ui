@@ -10,6 +10,8 @@ class APIConstants {
   MIRTH_DEFAULT_PASSWORD = 'admin';
   MIRTH_LOGIN = '/api/users/_login';
   MIRTH_CHANNEL_STATUSES = '/api/channels/statuses';
+  MIRTH_CHANNEL_STATUS_ACTIONS = (channelId, action) =>
+    `/api/channels/${channelId}/${action}?returnErrors=true`;
   MIRTH_CHANNEL_MESSAGES = channelId => `/api/channels/${channelId}/messages?`;
   MIRTH_CHANNEL_MESSAGES_COUNT = channelId =>
     `/api/channels/${channelId}/messages/count?`;

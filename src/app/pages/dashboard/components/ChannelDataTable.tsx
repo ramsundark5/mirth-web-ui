@@ -8,6 +8,7 @@ import MUIDataTable from 'mui-datatables';
 import { useAppSelector } from 'store/hooks';
 import log from 'utils/logger';
 
+import ActionToolbar from './ActionToolbar';
 import { columns } from './ChannelDataTableConfig';
 
 export default function ChannelsDataTable() {
@@ -59,6 +60,9 @@ export default function ChannelsDataTable() {
     expandableRowsOnClick: true,
     renderExpandableRow: renderDetailColumn,
     toggleAllExpandableRows: true,
+    customToolbarSelect: (selectedRows, displayData) => (
+      <ActionToolbar selectedRows={selectedRows} displayData={displayData} />
+    ),
     customFilterDialogFooter: () => <FilterDialogFooter />,
   };
 

@@ -69,3 +69,16 @@ export const channelStateSelector = createSelector(
     };
   },
 );
+
+export const channelsSelectedForActionSelector = createSelector(
+  [selectSlice],
+  channelState => {
+    return channelState.channelsSelectedForAction;
+  },
+);
+
+export const selectChannelById = channelId =>
+  createSelector([selectSlice], channelState => {
+    const channel = channelState.entities[channelId];
+    return channel;
+  });

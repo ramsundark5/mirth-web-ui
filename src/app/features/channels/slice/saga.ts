@@ -1,17 +1,20 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import APIConstants from 'app/constants/APIConstants';
+import { selectConectionById } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, select } from 'redux-saga/effects';
 import log from 'utils/logger';
 import { requestMirthAPI } from 'utils/request';
 
-import { Channel } from './types';
+import { selectChannelById } from './selectors';
+import { Channel, ChannelActionParam } from './types';
 
 import { channelsActions as actions } from '.';
 
 export function* channelsSaga() {
   yield takeLatest(actions.loadChannels.type, onLoadChannels);
   yield takeLatest(actions.loadChannelsSilently.type, onLoadChannelsSilently);
+  yield takeLatest(actions.applyAction.type, onApplyChannelAction);
 }
 
 function* onLoadChannels({ payload }: PayloadAction<Connection[]>) {
@@ -102,4 +105,33 @@ function buildStatistic(statisticArray, queued) {
   }
   statistic['QUEUED'] = parseInt(queued || 0);
   return statistic;
+}
+
+function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
+  yield put(actions.setLoading(true));
+  try {
+    const channelIdList = payload.channelIdList || [];
+    for (let channelId of channelIdList) {
+      const selectedChannel = yield select(selectChannelById(channelId));
+      const connectionId = selectedChannel?.connectionId;
+      const connection = yield select(selectConectionById(connectionId));
+      const action = '_' + payload.action?.toLowerCase();
+      const url =
+        (connection.url || APIConstants.MIRTH_DEFAULT_URL) +
+        APIConstants.MIRTH_CHANNEL_STATUS_ACTIONS(
+          selectedChannel?.channelId,
+          action,
+        );
+      const response = yield call(requestMirthAPI, {
+        url: url,
+        method: 'POST',
+        connectionId: connection.id,
+        jsessionid: connection.jsessionid,
+      });
+      console.log(response);
+    }
+  } catch (err) {
+  } finally {
+    yield put(actions.setLoading(false));
+  }
 }
