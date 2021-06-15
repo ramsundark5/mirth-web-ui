@@ -32,8 +32,9 @@ export default function ConnectionSelector() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const anyChannelSelectedForAction =
-        channelsSelectedForAction && channelsSelectedForAction.length > 0;
+      const channelSelectCount =
+        localStorage.getItem('channelSelectedForAction') || '0';
+      const anyChannelSelectedForAction = parseInt(channelSelectCount) > 0;
       if (
         process.env.REACT_APP_ENV !== 'test' &&
         !anyChannelSelectedForAction

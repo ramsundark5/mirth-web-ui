@@ -74,13 +74,16 @@ app.post('/mirth/api', async (req, res) => {
   try {
     let requestConfig = {
       url: mirthUrl,
-      method: 'GET',
+      method: method,
       headers: {
         cookie: 'JSESSIONID=' + req.get('jsessionid'),
+        'Content-Type': 'application/xml',
       },
     };
     if (method === 'POST' || method === 'PUT') {
-      requestConfig.data = req.body;
+      if (!isEmptyObject(req.body)) {
+        requestConfig.data = req.body;
+      }
     }
     const axiosResponse = await axios.request(requestConfig);
     response = axiosResponse.data;
@@ -115,5 +118,11 @@ function handleError(err) {
   }
   const statusCode = status;
   return { status: statusCode, message: message };
+}
+
+function isEmptyObject(value) {
+  return (
+    value && Object.keys(value).length === 0 && value.constructor === Object
+  );
 }
 app.listen(port, () => console.log(`Listening on port ${port}`));

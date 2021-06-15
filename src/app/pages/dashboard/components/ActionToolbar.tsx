@@ -3,24 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, MenuItem, Select } from '@material-ui/core';
 import LoadingButton from 'app/components/LoadingButton';
 import { channelsActions } from 'app/features/channels/slice';
-import { channelsSelectedForActionSelector } from 'app/features/channels/slice/selectors';
-import { useAppDispatch, useAppSelector } from 'store/hooks';
-
-export enum CHANNEL_ACTIONS {
-  START = 'START',
-  STOP = 'STOP',
-  HALT = 'HALT',
-  PAUSE = 'PAUSE',
-  RESUME = 'RESUME',
-}
+import { CHANNEL_ACTIONS } from 'app/features/channels/slice/types';
+import { useAppDispatch } from 'store/hooks';
 
 export default function ActionToolbar(props: { selectedRows; displayData }) {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const { selectedRows, displayData } = props;
-  const channelsSelectedForAction = useAppSelector(
-    channelsSelectedForActionSelector,
-  );
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [selectedAction, setSelectedAction] = useState<string>(
     CHANNEL_ACTIONS.START.toString(),
   );
@@ -33,7 +23,8 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
       const channelId = channelData?.data?.[7];
       channelIdList.push(channelId);
     }
-    dispatch(channelsActions.setChannelsSelectedForAction(channelIdList));
+    setSelectedChannels(channelIdList);
+    localStorage.setItem('channelSelectedForAction', '' + channelIdList.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRows, displayData, dispatch]);
 
@@ -45,10 +36,11 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
   const onSubmit = () => {
     dispatch(
       channelsActions.applyAction({
-        channelIdList: channelsSelectedForAction,
+        channelIdList: selectedChannels,
         action: selectedAction,
       }),
     );
+    localStorage.setItem('channelSelectedForAction', '0');
   };
 
   return (

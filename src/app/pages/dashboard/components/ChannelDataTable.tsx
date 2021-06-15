@@ -48,6 +48,15 @@ export default function ChannelsDataTable() {
     }
   };
 
+  const handleRowSelectionChange = (
+    currentRowsSelected,
+    allRowsSelected,
+    rowsSelected,
+  ) => {
+    if (rowsSelected.length < 1) {
+      localStorage.setItem('channelSelectedForAction', '0');
+    }
+  };
   //this component is required to set custom filter toolbar size
   const FilterDialogFooter = () => <Box width={640} />;
 
@@ -63,6 +72,7 @@ export default function ChannelsDataTable() {
     customToolbarSelect: (selectedRows, displayData) => (
       <ActionToolbar selectedRows={selectedRows} displayData={displayData} />
     ),
+    onRowSelectionChange: handleRowSelectionChange,
     customFilterDialogFooter: () => <FilterDialogFooter />,
   };
 

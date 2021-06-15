@@ -25,3 +25,11 @@ export interface ChannelActionParam {
   channelIdList?: string[];
   action?: string;
 }
+
+export enum CHANNEL_ACTIONS {
+  START = 'START',
+  STOP = 'STOP',
+  HALT = 'HALT',
+  PAUSE = 'PAUSE',
+  RESUME = 'RESUME',
+}
