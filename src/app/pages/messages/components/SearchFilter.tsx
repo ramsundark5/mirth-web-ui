@@ -13,6 +13,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Backdrop,
+  CircularProgress,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import {
@@ -21,7 +23,10 @@ import {
 } from '@material-ui/pickers';
 import LoadingButton from 'app/components/LoadingButton';
 import { channelsActions } from 'app/features/channels/slice';
-import { channelsByConnectionSelector } from 'app/features/channels/slice/selectors';
+import {
+  channelsByConnectionSelector,
+  channelStateSelector,
+} from 'app/features/channels/slice/selectors';
 import { Channel } from 'app/features/channels/slice/types';
 import { activeConnectionSelector } from 'app/features/connections/slice/selectors';
 import { Connection } from 'app/features/connections/slice/types';
@@ -46,6 +51,7 @@ export default function SearchFilter() {
   const messageState: MessageState =
     useAppSelector<MessageState>(messagesSelector);
 
+  const channelState = useAppSelector(channelStateSelector);
   const placeholderConnection: Connection = {
     id: '--Select Connection--',
     url: '--Select Connection--',
@@ -58,7 +64,7 @@ export default function SearchFilter() {
 
   //load the channels during the first load
   useEffect(() => {
-    dispatch(channelsActions.loadChannelsSilently(activeConnections));
+    //dispatch(channelsActions.loadChannelsSilently(activeConnections));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConnections]);
 
@@ -66,6 +72,7 @@ export default function SearchFilter() {
     const connectionFromSelect = event.target.value as Connection;
     if (connectionFromSelect?.id !== placeholderConnection.id) {
       dispatch(messageActions.setSelectedConnection(connectionFromSelect));
+      dispatch(channelsActions.loadChannels([connectionFromSelect]));
     }
   };
 
@@ -197,6 +204,9 @@ export default function SearchFilter() {
           </Grid>
         </Grid>
       </form>
+      <Backdrop className={classes.backdrop} open={channelState.loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </MuiPickersUtilsProvider>
   );
 }
@@ -208,5 +218,9 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(1.5, 0, 2),
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
 }));

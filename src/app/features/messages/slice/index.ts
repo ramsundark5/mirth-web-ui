@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import APIConstants from 'app/constants/APIConstants';
 import { Connection } from 'app/features/connections/slice/types';
+import {subMinutes } from 'date-fns';
 
 import {
   MessageState,
@@ -16,7 +17,7 @@ export const initialState: MessageState = {
     selectedChannels: [],
     textSearch: '',
     textSearchRegex: false,
-    startDate: new Date(),
+    startDate: subMinutes(new Date(), 60), //set start date to 1 hr in the past
     endDate: new Date(),
     page: 0,
     limit: APIConstants.DEFAULT_ROW_COUNT,

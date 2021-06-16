@@ -28,7 +28,7 @@ For production deployments:
 - [x] Add/manage mirth connections
 - [x] Channel status/statistics (Dashboard view)
 - [x] Search Messages across channels
-- [ ] start/stop channels
+- [x] start/stop channels
 - [ ] View channel code
 
 

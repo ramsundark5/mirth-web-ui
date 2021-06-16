@@ -17,6 +17,10 @@ export const columns = [
   {
     label: 'Name',
     name: 'name',
+    options: {
+      searchable: false,
+      filter: false,
+    },
   },
   {
     label: 'State',
