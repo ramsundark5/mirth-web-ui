@@ -67,6 +67,10 @@ export default function ChannelsDataTable() {
     expandableRows: true,
     expandableRowsHeader: true,
     expandableRowsOnClick: true,
+    sortOrder: {
+      name: 'name',
+      direction: 'asc',
+    },
     renderExpandableRow: renderDetailColumn,
     toggleAllExpandableRows: true,
     customToolbarSelect: (selectedRows, displayData) => (

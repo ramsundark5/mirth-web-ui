@@ -7,7 +7,7 @@ import log from 'utils/logger';
 import { requestMirthAPI } from 'utils/request';
 
 import { selectChannelById } from './selectors';
-import { Channel, ChannelActionParam } from './types';
+import { Channel, ChannelActionParam, CHANNEL_ACTIONS } from './types';
 
 import { channelsActions as actions } from '.';
 
@@ -110,6 +110,7 @@ function buildStatistic(statisticArray, queued) {
 function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
   yield put(actions.setLoading(true));
   try {
+    yield setPendingStatus(payload.channelIdList, payload.action);
     const channelIdList = payload.channelIdList || [];
     for (let channelId of channelIdList) {
       const selectedChannel = yield select(selectChannelById(channelId));
@@ -122,16 +123,44 @@ function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
           selectedChannel?.channelId,
           action,
         );
-      const response = yield call(requestMirthAPI, {
+      yield call(requestMirthAPI, {
         url: url,
         method: 'POST',
         connectionId: connection.id,
         jsessionid: connection.jsessionid,
       });
-      console.log(response);
     }
   } catch (err) {
+    log.error('Error changing channel state ', err);
   } finally {
+    localStorage.setItem('channelSelectedForAction', '0');
     yield put(actions.setLoading(false));
+  }
+}
+
+function* setPendingStatus(channelIdList, action) {
+  let status = 'STARTED';
+  switch (action) {
+    case CHANNEL_ACTIONS.START.toString():
+      status = 'STARTING';
+      break;
+    case CHANNEL_ACTIONS.STOP.toString():
+      status = 'STOPPING';
+      break;
+    case CHANNEL_ACTIONS.HALT.toString():
+      status = 'HALTING';
+      break;
+    case CHANNEL_ACTIONS.PAUSE.toString():
+      status = 'PAUSING';
+      break;
+    case CHANNEL_ACTIONS.RESUME.toString():
+      status = 'RESUMING';
+      break;
+    default:
+      status = 'STARTED';
+  }
+  for (const channelId of channelIdList || []) {
+    const updates = { id: channelId, changes: { state: status } };
+    yield put(actions.updateChannel(updates));
   }
 }

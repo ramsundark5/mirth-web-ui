@@ -3,12 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { makeStyles, MenuItem, Select } from '@material-ui/core';
 import LoadingButton from 'app/components/LoadingButton';
 import { channelsActions } from 'app/features/channels/slice';
+import { channelStateSelector } from 'app/features/channels/slice/selectors';
 import { CHANNEL_ACTIONS } from 'app/features/channels/slice/types';
-import { useAppDispatch } from 'store/hooks';
+import { useAppDispatch, useAppSelector } from 'store/hooks';
 
 export default function ActionToolbar(props: { selectedRows; displayData }) {
   const classes = useStyles();
   const dispatch = useAppDispatch();
+  const channelState = useAppSelector(channelStateSelector);
   const { selectedRows, displayData } = props;
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [selectedAction, setSelectedAction] = useState<string>(
@@ -40,7 +42,6 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
         action: selectedAction,
       }),
     );
-    localStorage.setItem('channelSelectedForAction', '0');
   };
 
   return (
@@ -60,6 +61,7 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
         ))}
       </Select>
       <LoadingButton
+        loading={channelState?.loading || false}
         onClick={onSubmit}
         type="submit"
         variant="contained"
