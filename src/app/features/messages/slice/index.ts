@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import APIConstants from 'app/constants/APIConstants';
 import { Connection } from 'app/features/connections/slice/types';
-import {subMinutes } from 'date-fns';
+import { subMinutes } from 'date-fns';
 
 import {
   MessageState,
