@@ -5,7 +5,7 @@ import log from 'utils/logger';
 
 import { getMessageCount, loadMessages } from './messageAPI';
 import { messagesSelector } from './selectors';
-import { MessageSearchParams, MessageState } from './types';
+import { Message, MessageSearchParams, MessageState } from './types';
 
 import { messageActions as actions } from '.';
 
@@ -29,10 +29,9 @@ function* searchMessages(messageState: MessageState, isNewSearch?: boolean) {
   const messageSearchParams: MessageSearchParams = messageState.searchParams;
   try {
     yield put(actions.setLoading(true));
-    const channelIdToSearch =
-      messageSearchParams?.selectedChannels?.[0]?.channelId;
+    const selectedChannels = messageSearchParams?.selectedChannels;
     const selectedConnection = messageSearchParams?.selectedConnection;
-    if (channelIdToSearch) {
+    if (selectedChannels && selectedChannels.length > 0) {
       let queryParams = new URLSearchParams();
       const nonSearchableKeys = [
         'selectedConnection',
@@ -59,21 +58,30 @@ function* searchMessages(messageState: MessageState, isNewSearch?: boolean) {
       queryParams.append('offset', offset.toString());
       queryParams.append('limit', limit.toString());
       const queryParamsString = queryParams.toString();
-      const messageResponse = yield loadMessages({
-        connection: selectedConnection,
-        channelId: channelIdToSearch,
-        params: queryParamsString,
-      });
-      //get and set count only for cleared searches. if just paginating, skip
-      if (isNewSearch) {
-        const messageTotalCount = yield getMessageCount({
+      let messageList: Message[] = [];
+      let messageCount = 0;
+      for (let selectedChannel of selectedChannels) {
+        const channelIdToSearch = selectedChannel.channelId;
+        const messageResponse = yield loadMessages({
           connection: selectedConnection,
           channelId: channelIdToSearch,
           params: queryParamsString,
         });
-        yield put(actions.setMessageCount(parseInt(messageTotalCount || 0)));
+        //get and set count only for cleared searches. if just paginating, skip
+        if (isNewSearch) {
+          const messageTotalCount = yield getMessageCount({
+            connection: selectedConnection,
+            channelId: channelIdToSearch,
+            params: queryParamsString,
+          });
+          messageCount += parseInt(messageTotalCount || 0);
+        }
+        messageList.push(...messageResponse);
       }
-      yield put(actions.setMessages(messageResponse));
+      yield put(actions.setMessages(messageList));
+      if (isNewSearch) {
+        yield put(actions.setMessageCount(messageCount));
+      }
     }
   } catch (err) {
     log.error('Error loading messages ', err);

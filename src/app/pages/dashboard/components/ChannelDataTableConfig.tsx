@@ -1,3 +1,18 @@
+import React from 'react';
+
+import { Typography } from '@material-ui/core';
+import { green, red, orange } from '@material-ui/core/colors';
+
+const renderStatus = value => {
+  let statusColor: string = red[500];
+  if (value === 'STARTED') {
+    statusColor = green[500];
+  } else if (value.endsWith('ING')) {
+    statusColor = orange[500];
+  }
+  return <Typography style={{ color: statusColor }}> {value} </Typography>;
+};
+
 export const columns = [
   {
     label: 'Name',
@@ -6,6 +21,9 @@ export const columns = [
   {
     label: 'State',
     name: 'state',
+    options: {
+      customBodyRender: renderStatus,
+    },
   },
   {
     label: 'Received',

@@ -138,7 +138,9 @@ export async function request(
     }
     if (error?.request?.status === 0) {
       const errMessage =
-        'Unable to reach the host. Check your internet or network connection.';
+        'Unable to reach the host ' +
+        connectionId +
+        '. Check your internet or network connection.';
       errorResponse = {
         status: 0,
         message: errMessage,

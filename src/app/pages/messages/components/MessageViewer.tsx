@@ -84,6 +84,10 @@ export default function MessagesViewer() {
     filter: false,
     download: false,
     selectableRowsHideCheckboxes: true,
+    sortOrder: {
+      name: 'receivedDate',
+      direction: 'desc',
+    },
     customSearchRender: renderSearchFilter,
     searchOpen: true,
     serverSide: true,
