@@ -64,15 +64,22 @@ export default function SearchFilter() {
 
   //load the channels during the first load
   useEffect(() => {
-    //dispatch(channelsActions.loadChannelsSilently(activeConnections));
+    dispatch(channelsActions.loadChannelsSilently(activeConnections));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeConnections]);
+
+  useEffect(() => {
+    const filteredChannelsLength = filteredChannels?.length || 0;
+    if (selectedConnection && filteredChannelsLength < 1) {
+      dispatch(channelsActions.loadChannels([selectedConnection]));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedConnection]);
 
   const onSelectedConnectionChange = event => {
     const connectionFromSelect = event.target.value as Connection;
     if (connectionFromSelect?.id !== placeholderConnection.id) {
       dispatch(messageActions.setSelectedConnection(connectionFromSelect));
-      dispatch(channelsActions.loadChannels([connectionFromSelect]));
     }
   };
 

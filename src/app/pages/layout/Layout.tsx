@@ -30,13 +30,23 @@ const drawerWidth = 240;
 export default function Layout() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const savedDarkModePreference = localStorage.getItem('mirthui_dark_mode');
+  const currentDarkPref =
+    savedDarkModePreference && savedDarkModePreference === 'true'
+      ? true
+      : false;
+  const [darkMode, setDarkMode] = useState(currentDarkPref);
 
-  const [darkMode, setDarkMode] = useState(false);
   const theme = createMuiTheme({
     palette: {
       type: darkMode ? 'dark' : 'light',
     },
   });
+
+  const handleDarkModeChange = value => {
+    localStorage.setItem('mirthui_dark_mode', value);
+    setDarkMode(value);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -82,7 +92,7 @@ export default function Layout() {
                   control={
                     <Switch
                       checked={darkMode}
-                      onChange={() => setDarkMode(!darkMode)}
+                      onChange={() => handleDarkModeChange(!darkMode)}
                     />
                   }
                   label="Dark"

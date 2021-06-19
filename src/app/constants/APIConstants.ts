@@ -17,5 +17,6 @@ class APIConstants {
     `/api/channels/${channelId}/messages/count?`;
   MIRTH_CHANNEL_MESSAGE_CONTENT = (channelId, messageId) =>
     `api/channels/${channelId}/messages/${messageId}`;
+  MIRTH_CHANNEL_DETAIL = channelId => `/api/channels/${channelId}`;
 }
 export default new APIConstants();
