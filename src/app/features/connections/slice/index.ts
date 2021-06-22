@@ -29,6 +29,7 @@ const slice = createSlice({
     updateConnection: connectionAdapter.updateOne,
     upsertConnection: connectionAdapter.upsertOne,
     removeConnection: connectionAdapter.removeOne,
+    removeConnectionAndReferences(state, action: PayloadAction<string>) {},
     setSubmitState(state, action: PayloadAction<string>) {
       state.submitState = action.payload;
     },

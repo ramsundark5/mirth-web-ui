@@ -63,17 +63,18 @@ function buildChannels(response, connection) {
   const channelResponseList = response?.list?.dashboardStatus;
   if (channelResponseList) {
     for (let channelSegment of channelResponseList) {
-      let channelData: Channel = buildChannel(channelSegment);
-      channelData.connectionId = connection.id;
+      let channelData: Channel = buildChannel(channelSegment, connection.id);
       channelList.push(channelData);
     }
   }
   return channelList;
 }
 
-function buildChannel(channelSegment) {
+function buildChannel(channelSegment, connectionId) {
   let channelData: Channel = {
+    id: channelSegment.channelId?.[0] + '_' + connectionId,
     channelId: channelSegment.channelId?.[0],
+    connectionId: connectionId,
     name: channelSegment.name?.[0],
     state: channelSegment.state?.[0],
   };
@@ -88,7 +89,7 @@ function buildChannel(channelSegment) {
   let conectorList: Channel[] = [];
   if (connectorResponseList) {
     for (let connectorSegment of connectorResponseList) {
-      let connectorData: Channel = buildChannel(connectorSegment);
+      let connectorData: Channel = buildChannel(connectorSegment, connectionId);
       conectorList.push(connectorData);
     }
   }
@@ -110,19 +111,16 @@ function buildStatistic(statisticArray, queued) {
 function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
   yield put(actions.setLoading(true));
   try {
-    yield setPendingStatus(payload.channelIdList, payload.action);
-    const channelIdList = payload.channelIdList || [];
-    for (let channelId of channelIdList) {
-      const selectedChannel = yield select(selectChannelById(channelId));
+    yield setPendingStatus(payload.channelUidList, payload.action);
+    const channelUidList = payload.channelUidList || [];
+    for (let channelUid of channelUidList) {
+      const selectedChannel = yield select(selectChannelById(channelUid));
       const connectionId = selectedChannel?.connectionId;
       const connection = yield select(selectConectionById(connectionId));
       const action = '_' + payload.action?.toLowerCase();
       const url =
         (connection.url || APIConstants.MIRTH_DEFAULT_URL) +
-        APIConstants.MIRTH_CHANNEL_STATUS_ACTIONS(
-          selectedChannel?.channelId,
-          action,
-        );
+        APIConstants.MIRTH_CHANNEL_STATUS_ACTIONS(selectedChannel?.id, action);
       yield call(requestMirthAPI, {
         url: url,
         method: 'POST',
@@ -138,7 +136,7 @@ function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
   }
 }
 
-function* setPendingStatus(channelIdList, action) {
+function* setPendingStatus(channelUidList, action) {
   let status = 'STARTED';
   switch (action) {
     case CHANNEL_ACTIONS.START.toString():
@@ -159,8 +157,8 @@ function* setPendingStatus(channelIdList, action) {
     default:
       status = 'STARTED';
   }
-  for (const channelId of channelIdList || []) {
-    const updates = { id: channelId, changes: { state: status } };
+  for (const channelUid of channelUidList || []) {
+    const updates = { id: channelUid, changes: { state: status } };
     yield put(actions.updateChannel(updates));
   }
 }

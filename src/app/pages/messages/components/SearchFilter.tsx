@@ -86,7 +86,7 @@ export default function SearchFilter() {
   const isSelectedChannel = option => {
     const selectedChannels = formik.values.selectedChannels || [];
     const isSelected = selectedChannels.some(
-      channel => channel.channelId === option.channelId,
+      channel => channel.id === option.id,
     );
     return isSelected;
   };

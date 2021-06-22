@@ -77,8 +77,8 @@ export const channelsSelectedForActionSelector = createSelector(
   },
 );
 
-export const selectChannelById = channelId =>
+export const selectChannelById = channelUid =>
   createSelector([selectSlice], channelState => {
-    const channel = channelState.entities[channelId];
+    const channel = channelState.entities[channelUid];
     return channel;
   });

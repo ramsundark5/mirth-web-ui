@@ -18,15 +18,18 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
   );
 
   useEffect(() => {
-    let channelIdList: string[] = [];
+    let channelUidList: string[] = [];
     const selectedRowsData = selectedRows?.data || [];
     for (let selectedRowData of selectedRowsData) {
       const channelData = displayData[selectedRowData.index];
-      const channelId = channelData?.data?.[7];
-      channelIdList.push(channelId);
+      const channelUid = channelData?.data?.[9];
+      channelUidList.push(channelUid);
     }
-    setSelectedChannels(channelIdList);
-    localStorage.setItem('channelSelectedForAction', '' + channelIdList.length);
+    setSelectedChannels(channelUidList);
+    localStorage.setItem(
+      'channelSelectedForAction',
+      '' + channelUidList.length,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedRows, displayData, dispatch]);
 
@@ -38,7 +41,7 @@ export default function ActionToolbar(props: { selectedRows; displayData }) {
   const onSubmit = () => {
     dispatch(
       channelsActions.applyAction({
-        channelIdList: selectedChannels,
+        channelUidList: selectedChannels,
         action: selectedAction,
       }),
     );

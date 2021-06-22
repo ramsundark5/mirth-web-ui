@@ -70,7 +70,7 @@ export const columns = [
     },
   },
   {
-    id: 'channelId',
+    label: 'channelId',
     name: 'channelId',
     options: {
       display: 'excluded',
@@ -80,8 +80,18 @@ export const columns = [
     },
   },
   {
-    id: 'connectors',
+    label: 'connectors',
     name: 'connectors',
+    options: {
+      display: 'excluded',
+      searchable: false,
+      viewColumns: false,
+      filter: false,
+    },
+  },
+  {
+    label: 'id',
+    name: 'id',
     options: {
       display: 'excluded',
       searchable: false,

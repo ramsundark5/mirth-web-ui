@@ -5,7 +5,7 @@ import { Connection } from 'app/features/connections/slice/types';
 import { Channel, ChannelActionParam } from './types';
 
 export const channelAdapter = createEntityAdapter<Channel>({
-  selectId: channel => channel.channelId || '',
+  selectId: channel => channel.id || '',
   sortComparer: (a, b) => {
     const name1 = a?.name || '';
     const name2 = b?.name || '';
@@ -31,6 +31,7 @@ const slice = createSlice({
     updateChannel: channelAdapter.updateOne,
     upsertChannel: channelAdapter.upsertOne,
     removeChannel: channelAdapter.removeOne,
+    removeManyChannels: channelAdapter.removeMany,
     setLoading(state, action: PayloadAction<boolean>) {
       state.loading = action.payload;
     },

@@ -4,8 +4,9 @@ export interface ChannelError {
 }
 
 export interface Channel {
+  id: string; //channel id is not unique across servers
   channelId: string;
-  connectionId?: string;
+  connectionId: string;
   serverId?: string;
   name?: string;
   state?: string;
@@ -22,7 +23,7 @@ export interface Statistic {
 }
 
 export interface ChannelActionParam {
-  channelIdList?: string[];
+  channelUidList?: string[];
   action?: string;
 }
 

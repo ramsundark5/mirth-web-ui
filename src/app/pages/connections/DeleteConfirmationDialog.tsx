@@ -22,7 +22,7 @@ export default function DeleteConfirmationDialog(
   const dispatch = useAppDispatch();
   const { connection, open, onClose } = props;
   const onDeleteConfirm = () => {
-    dispatch(connectionsActions.removeConnection(connection.id));
+    dispatch(connectionsActions.removeConnectionAndReferences(connection.id));
     onClose();
   };
 
@@ -41,10 +41,15 @@ export default function DeleteConfirmationDialog(
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary">
+          <Button onClick={onClose} variant="contained" color="primary">
             Cancel
           </Button>
-          <Button onClick={onDeleteConfirm} color="primary" autoFocus>
+          <Button
+            onClick={onDeleteConfirm}
+            variant="contained"
+            color="primary"
+            autoFocus
+          >
             OK
           </Button>
         </DialogActions>

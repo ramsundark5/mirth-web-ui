@@ -1,6 +1,9 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import APIConstants from 'app/constants/APIConstants';
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { channelsActions } from 'app/features/channels/slice';
+import { channelsByConnectionSelector } from 'app/features/channels/slice/selectors';
+import { Channel } from 'app/features/channels/slice/types';
+import { call, put, select, takeLatest } from 'redux-saga/effects';
 import log from 'utils/logger';
 import { request } from 'utils/request';
 
@@ -10,8 +13,22 @@ import { connectionsActions as actions, SUBMIT_STATES } from '.';
 
 export function* connectionsSaga() {
   yield takeLatest(actions.onLogin.type, login);
+  yield takeLatest(actions.removeConnectionAndReferences.type, remove);
 }
 
+export function* remove({ payload }: PayloadAction<string>) {
+  const filteredChannels: Channel[] = yield select(
+    channelsByConnectionSelector(payload),
+  );
+  let filteredChannelUidList: string[] = [];
+  if (filteredChannels && filteredChannels.length > 0) {
+    filteredChannels.forEach(channel =>
+      filteredChannelUidList.push(channel.id),
+    );
+  }
+  yield put(channelsActions.removeManyChannels(filteredChannelUidList));
+  yield put(actions.removeConnection(payload));
+}
 export function* login({ payload }: PayloadAction<IMirthClientParams>) {
   let connection = {
     id: payload.url,
