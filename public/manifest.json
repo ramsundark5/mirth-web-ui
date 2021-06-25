@@ -1,6 +1,6 @@
 {
-  "short_name": "mierh-web-ui",
-  "name": "Mirth ",
+  "short_name": "mirth-web-ui",
+  "name": "Mirth Web UI",
   "icons": [
     {
       "src": "favicon.ico",
