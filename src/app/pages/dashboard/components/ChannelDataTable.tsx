@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Box, TableCell, TableRow } from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
@@ -15,6 +15,9 @@ export default function ChannelsDataTable() {
   const channelList: Channel[] = useAppSelector(
     channelsBySelectedConnectionsSelector,
   );
+
+  const [sortedColumn, setSortedColumn] = useState<string>('name');
+  const [sortDirection, setSortedDirection] = useState<string>('asc');
 
   const renderDetailColumn = (rowData, rowMeta) => {
     log.debug('rowData' + rowData);
@@ -68,8 +71,12 @@ export default function ChannelsDataTable() {
     expandableRowsHeader: true,
     expandableRowsOnClick: true,
     sortOrder: {
-      name: 'name',
-      direction: 'asc',
+      name: sortedColumn,
+      direction: sortDirection,
+    },
+    onColumnSortChange: (changedColumn, direction) => {
+      setSortedColumn(changedColumn);
+      setSortedDirection(direction);
     },
     renderExpandableRow: renderDetailColumn,
     toggleAllExpandableRows: true,
