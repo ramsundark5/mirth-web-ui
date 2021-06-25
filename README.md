@@ -23,6 +23,10 @@ For production deployments:
 4. Open http://localhost:5000 to see the app home page.
 
 
+**Updating an existing production app:**
+1. cd into the folder where mirth-web-ui is installed
+2. npm run update
+
 **Features:**
 
 - [x] Add/manage mirth connections
