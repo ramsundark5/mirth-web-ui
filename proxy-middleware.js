@@ -1,3 +1,6 @@
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
 const path = require('path');
 
 const axios = require('axios');
@@ -95,8 +98,11 @@ app.post('/mirth/api', async (req, res) => {
   res.status(statusCode).send(response);
 });
 
-if (process.env.NODE_ENV === 'production') {
-  console.log('running in prod mode');
+if (
+  process.env.NODE_ENV === 'production' ||
+  process.env.NODE_ENV === 'productionssl'
+) {
+  console.log('running in prod mode ' + process.env.NODE_ENV);
   // Serve any static files
   app.use(express.static(path.join(__dirname, 'build')));
 
@@ -125,4 +131,22 @@ function isEmptyObject(value) {
     value && Object.keys(value).length === 0 && value.constructor === Object
   );
 }
-app.listen(port, () => console.log(`Listening on port ${port}`));
+if (process.env.NODE_ENV === 'productionssl') {
+  console.log('starting https mode');
+  const httpsServer = https.createServer(
+    {
+      key: fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+    },
+    app,
+  );
+
+  httpsServer.listen(port, () => {
+    console.log(`HTTPS Server running on port ${port}`);
+  });
+} else {
+  console.log('starting non-https mode');
+  http
+    .createServer(app)
+    .listen(port, () => console.log(`Listening on port ${port}`));
+}
