@@ -18,7 +18,7 @@ export const columns = [
     label: 'Name',
     name: 'name',
     options: {
-      searchable: false,
+      searchable: true,
       filter: false,
     },
   },
