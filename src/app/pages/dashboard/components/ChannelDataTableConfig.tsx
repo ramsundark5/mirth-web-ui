@@ -99,4 +99,13 @@ export const columns = [
       filter: false,
     },
   },
+  {
+    label: 'Server',
+    name: 'connectionId',
+    options: {
+      searchable: false,
+      viewColumns: false,
+      filter: false,
+    },
+  },
 ];
