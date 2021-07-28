@@ -120,7 +120,10 @@ function* onApplyChannelAction({ payload }: PayloadAction<ChannelActionParam>) {
       const action = '_' + payload.action?.toLowerCase();
       const url =
         (connection.url || APIConstants.MIRTH_DEFAULT_URL) +
-        APIConstants.MIRTH_CHANNEL_STATUS_ACTIONS(selectedChannel?.id, action);
+        APIConstants.MIRTH_CHANNEL_STATUS_ACTIONS(
+          selectedChannel?.channelId,
+          action,
+        );
       yield call(requestMirthAPI, {
         url: url,
         method: 'POST',
