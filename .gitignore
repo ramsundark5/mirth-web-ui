@@ -25,3 +25,5 @@ template
 .history
 
 *.pem
+*.pub
+*.key
